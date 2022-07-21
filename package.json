@@ -1,18 +1,18 @@
 {
-  "name": "copyright-nft",
+  "name": "soulboundtoken",
   "version": "1.0.0",
-  "description": "NFT that represents the Copyright of a song",
+  "description": "SBT - SoulBound Token (https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763)",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miquelcabot/copyright-nft.git"
+    "url": "git+https://github.com/miquelcabot/soulboundtoken.git"
   },
   "author": "Miquel A. Cabot",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/miquelcabot/copyright-nft/issues"
+    "url": "https://github.com/miquelcabot/soulboundtoken/issues"
   },
-  "homepage": "https://github.com/miquelcabot/copyright-nft#readme",
+  "homepage": "https://github.com/miquelcabot/soulboundtoken#readme",
   "scripts": {
     "compile": "hardhat compile",
     "hardhatnode": "hardhat node",
