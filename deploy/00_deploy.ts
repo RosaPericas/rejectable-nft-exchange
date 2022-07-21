@@ -9,7 +9,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   await deploy('SBT', {
     from: deployer,
-    args: [],
+    args: ['Soulbound Token', 'SBT'],
     log: true
   });
 };
