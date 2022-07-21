@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -8,18 +9,17 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 /// @title  SoulBound Token
 /// @author Miquel A. Cabot
 /// @dev    Following the design of https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763
-contract SBT is ERC721URIStorage {
+contract SBT is Ownable, ERC721URIStorage {
     using SafeMath for uint256;
     using Counters for Counters.Counter;
 
-    address owner;
     Counters.Counter private _tokenIds;
     mapping(address => bool) public issuedSBT;
     mapping(address => string) public accountToURI;
 
-    constructor() ERC721("Soulbound Token", "SBT") {
-      owner = msg.sender;
-    }
+    constructor(string memory _name, string memory _symbol)
+        ERC721(_name, _symbol)
+    {}
 
     function issueSBT(address to) external onlyOwner {
         require(!issuedSBT[to], "Token already issued");
@@ -27,19 +27,14 @@ contract SBT is ERC721URIStorage {
     }
 
     function claimSBT(string memory tokenURI) public returns (uint256) {
-      require(issuedSBT[msg.sender], "Token not issued");
-      _tokenIds.increment();
-      uint256 newTokenId = _tokenIds.current();
-      _mint(msg.sender, newTokenId);
+        require(issuedSBT[_msgSender()], "Token not issued");
+        _tokenIds.increment();
+        uint256 newTokenId = _tokenIds.current();
+        _mint(_msgSender(), newTokenId);
 
-      issuedSBT[msg.sender] = false;
-      accountToURI[msg.sender] = tokenURI;
+        issuedSBT[_msgSender()] = false;
+        accountToURI[_msgSender()] = tokenURI;
 
-      return newTokenId;
-    }
-
-    modifier onlyOwner() {
-      require(msg.sender == owner, "Only the owner can call this function");
-      _;
+        return newTokenId;
     }
 }
