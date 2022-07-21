@@ -13,16 +13,12 @@ dotenvConfig({ path: resolve(__dirname, './.env') });
 const CHAIN_IDS = {
   HARDHAT: 1337,
   MAINNET: 1,
-  MATIC_MAINNET: 137,
-  MUMBAI_TESTNET: 80001
+  RINKEBY: 4
 };
 
 const MNEMONIC = process.env.MNEMONIC || '';
 const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || '';
 const INFURA_API_KEY = process.env.INFURA_API_KEY || '';
-const MATIC_RPC = process.env.MATIC_RPC || 'https://rpc-mainnet.maticvigil.com';
-const MUMBAI_RPC =
-  process.env.MUMBAI_RPC || 'https://rpc-mumbai.maticvigil.com';
 
 const getInfuraURL = (network: string) => {
   return `https://${network}.infura.io/v3/${INFURA_API_KEY}`;
@@ -40,14 +36,9 @@ const config: HardhatUserConfig = {
       chainId: CHAIN_IDS.MAINNET,
       accounts: { mnemonic: MNEMONIC }
     },
-    matic: {
-      url: MATIC_RPC,
-      chainId: CHAIN_IDS.MATIC_MAINNET,
-      accounts: { mnemonic: MNEMONIC }
-    },
-    mumbai: {
-      url: MUMBAI_RPC,
-      chainId: CHAIN_IDS.MUMBAI_TESTNET,
+    rinkeby: {
+      url: getInfuraURL('rinkeby'),
+      chainId: CHAIN_IDS.RINKEBY,
       accounts: { mnemonic: MNEMONIC }
     }
   },
