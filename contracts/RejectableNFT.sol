@@ -10,6 +10,8 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @title  Rejectable NFT
@@ -18,9 +20,12 @@ import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
  * separately as {ERC721Enumerable}.
  * It also adds the possibility to be rejected by the receiver of the transfer function
  */
-contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata {
+contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     using Address for address;
     using Strings for uint256;
+    using Counters for Counters.Counter;
+
+    Counters.Counter private _tokenIdCounter;
 
     // Token name
     string private _name;
@@ -446,4 +451,10 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata {
         address to,
         uint256 tokenId
     ) internal virtual {}
+
+    function safeMint(address _to) public onlyOwner {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _safeMint(_to, tokenId);
+    }
 }
