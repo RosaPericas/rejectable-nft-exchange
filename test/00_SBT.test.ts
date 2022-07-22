@@ -130,4 +130,29 @@ describe('RejectableNFT', () => {
       expect(await nft.ownerOf(0)).to.be.equal(user2.address);
     });
   });
+
+  /**
+   * Transfer a Rejectable NFT
+   */
+  describe('Transfer a RejectableNFT', () => {
+    beforeEach(async () => {
+      await rejectableNFT.connect(owner).safeMint(user1.address);
+    });
+
+    it('You can\'t transfer if you aren\'t the owner nor approved', async () => {
+      await expect(
+        rejectableNFT.connect(owner).transferFrom(user1.address, user2.address, 1)
+      ).to.be.reverted;
+    });
+
+    it('Transfer a token', async () => {
+      // before transfer, we have a balance of 0
+      expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
+      // transfer
+      await rejectableNFT.connect(user1).transferFrom(user1.address, user2.address, 0);
+      // after transfer, we have a balance of 1
+      expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(1);
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(user2.address);
+    });
+  });
 });
