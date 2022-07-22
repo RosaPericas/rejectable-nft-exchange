@@ -1,18 +1,18 @@
 {
-  "name": "soulboundtoken",
+  "name": "rejectable-nft",
   "version": "1.0.0",
-  "description": "SBT - SoulBound Token (https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763)",
+  "description": "RejectableNFT. ERC-721 compatible NFT token that can be rejected by the receiver of the transfer function.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miquelcabot/soulboundtoken.git"
+    "url": "git+https://github.com/miquelcabot/rejectable-nft.git"
   },
   "author": "Miquel A. Cabot",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/miquelcabot/soulboundtoken/issues"
+    "url": "https://github.com/miquelcabot/rejectable-nft/issues"
   },
-  "homepage": "https://github.com/miquelcabot/soulboundtoken#readme",
+  "homepage": "https://github.com/miquelcabot/rejectable-nft#readme",
   "scripts": {
     "compile": "hardhat compile",
     "hardhatnode": "hardhat node",
@@ -20,8 +20,7 @@
     "coverage": "hardhat coverage",
     "test": "hardhat test --network hardhat",
     "deploy:localnet": "hardhat deploy --network hardhat",
-    "deploy:matic": "hardhat deploy --network matic",
-    "deploy:mumbai": "hardhat deploy --network mumbai",
+    "deploy:rinkeby": "hardhat deploy --network rinkeby",
     "lint:sol": "hardhat check",
     "lint:ts": "eslint . --ext .ts,.js --ignore-path .eslintignore",
     "lint:ts-fix": "eslint . --fix --ext .ts,.js --ignore-path .eslintignore",

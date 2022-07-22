@@ -1,8 +1,8 @@
-# soulboundtoken
-> SBT - SoulBound Token (https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4105763)
+# rejectable-nft
+> RejectableNFT. ERC-721 compatible NFT token that can be rejected by the receiver of the transfer function.
 
 ## 🔍 Overview
-Soulbound tokens are just permanent, non-transferable NFTs, meaning that they can't be given away or taken from your private blockchain wallet.
+...
 
 ## 📚 Installation
 
@@ -55,10 +55,4 @@ yarn deploy:localnet
 Deploy the smart contracts to the Rinkeby test network:
 ```
 yarn deploy:rinkeby
-```
-```
-
-Deploy the smart contracts to the Mumbai test network:
-```
-yarn deploy:mumbai
 ```
