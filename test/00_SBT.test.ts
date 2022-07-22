@@ -8,7 +8,7 @@ import { Contract } from 'ethers';
 chai.use(waffle.solidity);
 const { expect } = chai;
 
-const NFT_NAME = 'RejectableNFT';
+const NFT_NAME = 'Rejectable NFT test';
 const NFT_SYMBOL = 'RNFT';
 const BASE_URI = 'https://example.com/nft';
 

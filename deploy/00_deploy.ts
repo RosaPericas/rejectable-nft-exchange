@@ -9,7 +9,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   await deploy('RejectableNFT', {
     from: deployer,
-    args: [],
+    args: ['Rejectable NFT test', 'RNFT'],
     log: true
   });
 };
