@@ -18,9 +18,10 @@ describe('RejectableNFT', () => {
   let rejectableNFT: Contract;
   let owner: SignerWithAddress;
   let user1: SignerWithAddress;
+  let user2: SignerWithAddress;
 
   beforeEach(async () => {
-    [owner, user1] = await ethers.getSigners();
+    [owner, user1, user2] = await ethers.getSigners();
 
     // deploy NFT
     const NFT = await ethers.getContractFactory('NFT');
@@ -102,6 +103,31 @@ describe('RejectableNFT', () => {
       expect(await nft.ownerOf(0)).to.be.equal(user1.address);
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(1);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
+    });
+  });
+
+  /**
+   * Transfer a NFT
+   */
+  describe('Transfer a NFT', () => {
+    beforeEach(async () => {
+      await nft.connect(owner).safeMint(user1.address);
+    });
+
+    it('You can\'t transfer if you aren\'t the owner nor approved', async () => {
+      await expect(
+        nft.connect(owner).transferFrom(user1.address, user2.address, 1)
+      ).to.be.reverted;
+    });
+
+    it('Transfer a token', async () => {
+      // before transfer, we have a balance of 0
+      expect(await nft.balanceOf(user2.address)).to.be.equal(0);
+      // transfer
+      await nft.connect(user1).transferFrom(user1.address, user2.address, 0);
+      // after transfer, we have a balance of 1
+      expect(await nft.balanceOf(user2.address)).to.be.equal(1);
+      expect(await nft.ownerOf(0)).to.be.equal(user2.address);
     });
   });
 });
