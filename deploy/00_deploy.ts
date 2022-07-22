@@ -7,12 +7,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const { deployer } = await getNamedAccounts();
 
-  await deploy('SBT', {
+  await deploy('RejectableNFT', {
     from: deployer,
-    args: ['Soulbound Token', 'SBT'],
+    args: [],
     log: true
   });
 };
 
-func.tags = ['SBT'];
+func.tags = ['RejectableNFT'];
 export default func;
