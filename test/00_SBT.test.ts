@@ -12,7 +12,6 @@ const NFT_NAME = 'NFT test';
 const NFT_SYMBOL = 'NFT1';
 const RNFT_NAME = 'Rejectable NFT test';
 const RNFT_SYMBOL = 'RNFT1';
-const BASE_URI = 'https://example.com/nft';
 
 describe('RejectableNFT', () => {
   let nft: Contract;
@@ -77,6 +76,32 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.owner()).to.be.equal(owner.address);
       await rejectableNFT.connect(owner).transferOwnership(user1.address);
       expect(await rejectableNFT.owner()).to.be.equal(user1.address);
+    });
+  });
+
+  /**
+   * Mint
+   */
+  describe('Mint', () => {
+    it('Non owner can\'t mint', async () => {
+      await expect(nft.connect(user1).safeMint(user1.address)).to
+        .be.reverted;
+      await expect(rejectableNFT.connect(user1).safeMint(user1.address)).to
+        .be.reverted;
+    });
+
+    it('Owner can mint', async () => {
+      // before minting, we have a balance of 0
+      expect(await nft.balanceOf(user1.address)).to.be.equal(0);
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      // mint
+      await nft.connect(owner).safeMint(user1.address);
+      await rejectableNFT.connect(owner).safeMint(user1.address);
+      // after minting, we have a balance of 1
+      expect(await nft.balanceOf(user1.address)).to.be.equal(1);
+      expect(await nft.ownerOf(0)).to.be.equal(user1.address);
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(1);
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
     });
   });
 });
