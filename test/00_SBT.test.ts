@@ -154,5 +154,7 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(1);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user2.address);
     });
+
+    // TODO: We also need to test the EVENTS
   });
 });
