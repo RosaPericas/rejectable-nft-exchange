@@ -7,9 +7,15 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const { deployer } = await getNamedAccounts();
 
+  await deploy('ERC721', {
+    from: deployer,
+    args: ['NFT test', 'NFT1'],
+    log: true
+  });
+
   await deploy('RejectableNFT', {
     from: deployer,
-    args: ['Rejectable NFT test', 'RNFT'],
+    args: ['Rejectable NFT test', 'RNFT1'],
     log: true
   });
 };
