@@ -524,7 +524,11 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
 
     function cancelTransfer(uint256 tokenId) public {
         //solhint-disable-next-line max-line-length
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+        require(
+          // perhaps previous owner is address(0), when minting
+          (RejectableNFT.ownerOf(tokenId) == address(0) && owner() == _msgSender()) ||
+          _isApprovedOrOwner(_msgSender(), tokenId),
+          "ERC721: transfer caller is not owner nor approved");
 
         address from = RejectableNFT.ownerOf(tokenId);
         address to = _transferableOwners[tokenId];
