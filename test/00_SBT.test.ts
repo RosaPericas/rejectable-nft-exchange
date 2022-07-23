@@ -8,6 +8,7 @@ import { Contract } from 'ethers';
 chai.use(waffle.solidity);
 const { expect } = chai;
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const NFT_NAME = 'NFT test';
 const NFT_SYMBOL = 'NFT1';
 const RNFT_NAME = 'Rejectable NFT test';
@@ -141,6 +142,7 @@ describe('RejectableNFT', () => {
       await rejectableNFT.connect(owner).safeMint(user1.address);
       // after minting, we have a balance of 0, because the receiver needs to accept
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
     });
   });
 
@@ -166,6 +168,8 @@ describe('RejectableNFT', () => {
       await rejectableNFT.connect(user1).transferFrom(user1.address, user2.address, 0);
       // after transfer, we have a balance of 0, because the receiver needs to accept
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
+      // user1 is still the owner of the token
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
     });
 
     // TODO: We also need to test the EVENTS
