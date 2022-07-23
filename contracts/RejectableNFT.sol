@@ -72,15 +72,6 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     }
 
     /**
-     * @dev See {IERC721-ownerOf}.
-     */
-    function ownerOf(uint256 tokenId) public view virtual override returns (address) {
-        address owner = _owners[tokenId];
-        require(owner != address(0), "ERC721: owner query for nonexistent token");
-        return owner;
-    }
-
-    /**
      * @dev See {IERC721Metadata-name}.
      */
     function name() public view virtual override returns (string memory) {
@@ -422,6 +413,16 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     mapping(uint256 => address) private _transferableOwners;
 
     /**
+     * @dev See {IERC721-ownerOf}.
+     */
+    function ownerOf(uint256 tokenId) public view virtual override returns (address) {
+        address owner = _owners[tokenId];
+        // removed check, because when a token is minted, the owner is address(0)
+        // require(owner != address(0), "ERC721: owner query for nonexistent token");
+        return owner;
+    }
+
+    /**
      * @dev Mints `tokenId` and transfers it to `to`.
      *
      * WARNING: Usage of this method is discouraged, use {_safeMint} whenever possible
@@ -510,6 +511,7 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         address from = RejectableNFT.ownerOf(tokenId);
         address to = _transferableOwners[tokenId];
 
+        require(to != address(0), "RejectableNFT: token is not transferable");
         _transferableOwners[tokenId] = address(0);
 
         emit CancelTransferRequest(from, to, tokenId);
