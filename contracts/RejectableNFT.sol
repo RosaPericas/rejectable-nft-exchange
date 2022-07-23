@@ -502,7 +502,16 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         emit Transfer(from, to, tokenId);
     }
 
-    //TODO: REJECT
+    function rejectTransfer(uint256 tokenId) public {
+        require(_transferableOwners[tokenId] == _msgSender(), "RejectableNFT: reject transfer caller is not the receiver of the token");
+
+        address from = RejectableNFT.ownerOf(tokenId);
+        address to = _msgSender();
+
+        _transferableOwners[tokenId] = address(0);
+
+        emit Reject(from, to, tokenId);
+    }
 
     function cancelTransfer(uint256 tokenId) public {
         //solhint-disable-next-line max-line-length
