@@ -402,7 +402,7 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     /**
      * @dev Emitted when receiver reject `tokenId` transfer from `from` to `to`.
      */
-    event Reject(address indexed from, address indexed to, uint256 indexed tokenId);
+    event RejectTransferRequest(address indexed from, address indexed to, uint256 indexed tokenId);
 
     /**
      * @dev Emitted when sender cancels `tokenId` transfer `from` to `to`.
@@ -519,7 +519,7 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
 
         _transferableOwners[tokenId] = address(0);
 
-        emit Reject(from, to, tokenId);
+        emit RejectTransferRequest(from, to, tokenId);
     }
 
     function cancelTransfer(uint256 tokenId) public {
