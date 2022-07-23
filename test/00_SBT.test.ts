@@ -143,6 +143,8 @@ describe('RejectableNFT', () => {
       // after minting, we have a balance of 0, because the receiver needs to accept
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
+      // the receiver is the transferable owner
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user1.address);
     });
   });
 
@@ -170,8 +172,8 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // user1 is still the owner of the token
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
+      // the receiver is the transferable owner
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user2.address);
     });
-
-    // TODO: We also need to test the EVENTS
   });
 });
