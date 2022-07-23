@@ -505,6 +505,9 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         _balances[to] += 1;
         _owners[tokenId] = to;
 
+        // remove the transferable owner from the mapping
+        _transferableOwners[tokenId] = address(0);
+
         emit Transfer(from, to, tokenId);
     }
 
