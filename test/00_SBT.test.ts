@@ -53,35 +53,6 @@ describe('RejectableNFT', () => {
   });
 
   /**
-   * Ownership
-   */
-  describe('Ownership', () => {
-    it('Check owner', async () => {
-      expect(await nft.owner()).to.be.equal(owner.address);
-      expect(await rejectableNFT.owner()).to.be.equal(owner.address);
-    });
-
-    it('Non owner can\'t transfer ownership', async () => {
-      await expect(
-        nft.connect(user1).transferOwnership(owner.address)
-      ).to.be.reverted;
-      await expect(
-        rejectableNFT.connect(user1).transferOwnership(owner.address)
-      ).to.be.reverted;
-    });
-
-    it('Owner can transfer ownership', async () => {
-      expect(await nft.owner()).to.be.equal(owner.address);
-      await nft.connect(owner).transferOwnership(user1.address);
-      expect(await nft.owner()).to.be.equal(user1.address);
-
-      expect(await rejectableNFT.owner()).to.be.equal(owner.address);
-      await rejectableNFT.connect(owner).transferOwnership(user1.address);
-      expect(await rejectableNFT.owner()).to.be.equal(user1.address);
-    });
-  });
-
-  /**
    * Mint a NFT
    */
   describe('Mint a NFT', () => {
