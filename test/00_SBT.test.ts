@@ -146,6 +146,66 @@ describe('RejectableNFT', () => {
       // the receiver is the transferable owner
       expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user1.address);
     });
+
+    it('Sender can cancel', async () => {
+      // before minting, we have a balance of 0
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      // mint
+      await rejectableNFT.connect(owner).safeMint(user1.address);
+      // after minting, we have a balance of 0, because the receiver needs to accept
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
+      // the receiver is the transferable owner
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user1.address);
+
+      // the sender can cancel
+      await rejectableNFT.connect(owner).cancelTransfer(0);
+      // after minting, we have a balance of 0, because the receiver needs to accept
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
+      // the receiver is removed as transferable owner
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(ZERO_ADDRESS);
+    });
+
+    it('Receiver can reject', async () => {
+      // before minting, we have a balance of 0
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      // mint
+      await rejectableNFT.connect(owner).safeMint(user1.address);
+      // after minting, we have a balance of 0, because the receiver needs to accept
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
+      // the receiver is the transferable owner
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user1.address);
+
+      // the sender can cancel
+      await rejectableNFT.connect(user1).rejectTransfer(0);
+      // after minting, we have a balance of 0, because the receiver needs to accept
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
+      // the receiver is removed as transferable owner
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(ZERO_ADDRESS);
+    });
+
+    it('Receiver can accept transfer', async () => {
+      // before minting, we have a balance of 0
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      // mint
+      await rejectableNFT.connect(owner).safeMint(user1.address);
+      // after minting, we have a balance of 0, because the receiver needs to accept
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
+      // the receiver is the transferable owner
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user1.address);
+
+      // the sender can cancel
+      await rejectableNFT.connect(user1).acceptTransfer(0);
+      // after minting, we have a balance of 1
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(1);
+      expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
+      // the receiver is removed as transferable owner
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(ZERO_ADDRESS);
+    });
   });
 
   /**
