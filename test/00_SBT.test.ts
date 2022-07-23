@@ -81,28 +81,22 @@ describe('RejectableNFT', () => {
   });
 
   /**
-   * Mint
+   * Mint a NFT
    */
-  describe('Mint', () => {
+  describe('Mint a NFT', () => {
     it('Non owner can\'t mint', async () => {
       await expect(nft.connect(user1).safeMint(user1.address)).to
-        .be.reverted;
-      await expect(rejectableNFT.connect(user1).safeMint(user1.address)).to
         .be.reverted;
     });
 
     it('Owner can mint', async () => {
       // before minting, we have a balance of 0
       expect(await nft.balanceOf(user1.address)).to.be.equal(0);
-      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
       // mint
       await nft.connect(owner).safeMint(user1.address);
-      await rejectableNFT.connect(owner).safeMint(user1.address);
       // after minting, we have a balance of 1
       expect(await nft.balanceOf(user1.address)).to.be.equal(1);
       expect(await nft.ownerOf(0)).to.be.equal(user1.address);
-      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(1);
-      expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
     });
   });
 
@@ -132,11 +126,31 @@ describe('RejectableNFT', () => {
   });
 
   /**
+   * Mint a Rejectable NFT
+   */
+  describe('Mint a Rejectable NFT', () => {
+    it('Non owner can\'t mint', async () => {
+      await expect(rejectableNFT.connect(user1).safeMint(user1.address)).to
+        .be.reverted;
+    });
+
+    it('Owner can mint', async () => {
+      // before minting, we have a balance of 0
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+      // mint
+      await rejectableNFT.connect(owner).safeMint(user1.address);
+      // after minting, we have a balance of 0, because the receiver needs to accept
+      expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
+    });
+  });
+
+  /**
    * Transfer a Rejectable NFT
    */
-  describe('Transfer a RejectableNFT', () => {
+  describe('Transfer a Rejectable NFT', () => {
     beforeEach(async () => {
       await rejectableNFT.connect(owner).safeMint(user1.address);
+      await rejectableNFT.connect(user1).acceptTransfer(0);
     });
 
     it('You can\'t transfer if you aren\'t the owner nor approved', async () => {
@@ -150,9 +164,8 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // transfer
       await rejectableNFT.connect(user1).transferFrom(user1.address, user2.address, 0);
-      // after transfer, we have a balance of 1
-      expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(1);
-      expect(await rejectableNFT.ownerOf(0)).to.be.equal(user2.address);
+      // after transfer, we have a balance of 0, because the receiver needs to accept
+      expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
     });
 
     // TODO: We also need to test the EVENTS

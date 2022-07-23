@@ -21,6 +21,15 @@ import "@openzeppelin/contracts/utils/Counters.sol";
  * It also adds the possibility to be rejected by the receiver of the transfer function
  */
 contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
+    // TODO: -----------------------------------
+    /**
+     * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
+     */
+    event TransferRequest(address indexed from, address indexed to, uint256 indexed tokenId);
+
+    event CancelTransferRequest(address indexed from, address indexed to, uint256 indexed tokenId);
+    // TODO: -----------------------------------
+
     using Address for address;
     using Strings for uint256;
     using Counters for Counters.Counter;
@@ -35,6 +44,11 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
 
     // Mapping from token ID to owner address
     mapping(uint256 => address) private _owners;
+
+    // TODO: -----------------------------------
+    // Mapping from token ID to transferable owner
+    mapping(uint256 => address) private _transferableOwners;
+    // TODO: -----------------------------------
 
     // Mapping owner address to token count
     mapping(address => uint256) private _balances;
@@ -290,10 +304,15 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
 
         _beforeTokenTransfer(address(0), to, tokenId);
 
-        _balances[to] += 1;
+        // TODO: -----------------------------------
+        _transferableOwners[tokenId] = to;
+
+        emit TransferRequest(address(0), to, tokenId);
+        /* _balances[to] += 1;
         _owners[tokenId] = to;
 
-        emit Transfer(address(0), to, tokenId);
+        emit Transfer(address(0), to, tokenId); */
+        // TODO: -----------------------------------
 
         _afterTokenTransfer(address(0), to, tokenId);
     }
@@ -348,11 +367,16 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         // Clear approvals from the previous owner
         _approve(address(0), tokenId);
 
-        _balances[from] -= 1;
+        // TODO: -----------------------------------
+        _transferableOwners[tokenId] = to;
+        
+        emit TransferRequest(from, to, tokenId);
+        /* _balances[from] -= 1;
         _balances[to] += 1;
         _owners[tokenId] = to;
 
-        emit Transfer(from, to, tokenId);
+        emit Transfer(from, to, tokenId); */
+        // TODO: -----------------------------------
 
         _afterTokenTransfer(from, to, tokenId);
     }
@@ -456,5 +480,38 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(_to, tokenId);
+    }
+
+    function acceptTransfer(uint256 tokenId) public {
+        // TODO: -----------------------------------
+        require(_transferableOwners[tokenId] == _msgSender(), "RejectableNFT: accept transfer caller is not the receiver of the token");
+
+        address from = RejectableNFT.ownerOf(tokenId);
+        address to = _msgSender();
+
+        if (from != address(0)) { // Perhaps previous owner is address(0), when minting
+          _balances[from] -= 1;
+        }
+        _balances[to] += 1;
+        _owners[tokenId] = to;
+
+        emit Transfer(from, to, tokenId);
+        // TODO: -----------------------------------
+    }
+
+    //TODO: REJECT
+
+    function cancelTransfer(uint256 tokenId) public {
+        // TODO: -----------------------------------
+        //solhint-disable-next-line max-line-length
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+
+        address from = RejectableNFT.ownerOf(tokenId);
+        address to = _transferableOwners[tokenId];
+
+        _transferableOwners[tokenId] = address(0);
+
+        emit CancelTransferRequest(from, to, tokenId);
+        // TODO: -----------------------------------
     }
 }
