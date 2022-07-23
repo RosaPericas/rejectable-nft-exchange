@@ -412,6 +412,12 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     // Mapping from token ID to transferable owner
     mapping(uint256 => address) private _transferableOwners;
 
+    function transferableOwnerOf(uint256 tokenId) public view virtual returns (address) {
+        address owner = _transferableOwners[tokenId];
+
+        return owner;
+    }
+
     /**
      * @dev See {IERC721-ownerOf}.
      */
