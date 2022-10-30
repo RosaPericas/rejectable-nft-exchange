@@ -56,9 +56,8 @@ describe('RejectableNFT', () => {
    * Mint a NFT
    */
   describe('Mint a NFT', () => {
-    it('Non owner can\'t mint', async () => {
-      await expect(nft.connect(user1).safeMint(user1.address)).to
-        .be.reverted;
+    it("Non owner can't mint", async () => {
+      await expect(nft.connect(user1).safeMint(user1.address)).to.be.reverted;
     });
 
     it('Owner can mint', async () => {
@@ -80,7 +79,7 @@ describe('RejectableNFT', () => {
       await nft.connect(owner).safeMint(user1.address);
     });
 
-    it('You can\'t transfer if you aren\'t the owner nor approved', async () => {
+    it("You can't transfer if you aren't the owner nor approved", async () => {
       await expect(
         nft.connect(owner).transferFrom(user1.address, user2.address, 1)
       ).to.be.reverted;
@@ -101,9 +100,9 @@ describe('RejectableNFT', () => {
    * Mint a Rejectable NFT
    */
   describe('Mint a Rejectable NFT', () => {
-    it('Non owner can\'t mint', async () => {
-      await expect(rejectableNFT.connect(user1).safeMint(user1.address)).to
-        .be.reverted;
+    it("Non owner can't mint", async () => {
+      await expect(rejectableNFT.connect(user1).safeMint(user1.address)).to.be
+        .reverted;
     });
 
     it('Owner can mint', async () => {
@@ -115,7 +114,9 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
       // the receiver is the transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user1.address);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        user1.address
+      );
     });
 
     it('Sender can cancel', async () => {
@@ -127,7 +128,9 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
       // the receiver is the transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user1.address);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        user1.address
+      );
 
       // the sender can cancel
       await rejectableNFT.connect(owner).cancelTransfer(0);
@@ -135,7 +138,9 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
       // the receiver is removed as transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(ZERO_ADDRESS);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        ZERO_ADDRESS
+      );
     });
 
     it('Receiver can reject', async () => {
@@ -147,7 +152,9 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
       // the receiver is the transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user1.address);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        user1.address
+      );
 
       // the sender can cancel
       await rejectableNFT.connect(user1).rejectTransfer(0);
@@ -155,7 +162,9 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
       // the receiver is removed as transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(ZERO_ADDRESS);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        ZERO_ADDRESS
+      );
     });
 
     it('Receiver can accept transfer', async () => {
@@ -167,7 +176,9 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(0);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(ZERO_ADDRESS);
       // the receiver is the transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user1.address);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        user1.address
+      );
 
       // the sender can cancel
       await rejectableNFT.connect(user1).acceptTransfer(0);
@@ -175,7 +186,9 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user1.address)).to.be.equal(1);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
       // the receiver is removed as transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(ZERO_ADDRESS);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        ZERO_ADDRESS
+      );
     });
   });
 
@@ -188,9 +201,11 @@ describe('RejectableNFT', () => {
       await rejectableNFT.connect(user1).acceptTransfer(0);
     });
 
-    it('You can\'t transfer if you aren\'t the owner nor approved', async () => {
+    it("You can't transfer if you aren't the owner nor approved", async () => {
       await expect(
-        rejectableNFT.connect(owner).transferFrom(user1.address, user2.address, 1)
+        rejectableNFT
+          .connect(owner)
+          .transferFrom(user1.address, user2.address, 1)
       ).to.be.reverted;
     });
 
@@ -198,26 +213,34 @@ describe('RejectableNFT', () => {
       // before transfer, we have a balance of 0
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // transfer
-      await rejectableNFT.connect(user1).transferFrom(user1.address, user2.address, 0);
+      await rejectableNFT
+        .connect(user1)
+        .transferFrom(user1.address, user2.address, 0);
       // after transfer, we have a balance of 0, because the receiver needs to accept
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // user1 is still the owner of the token
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
       // the receiver is the transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user2.address);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        user2.address
+      );
     });
 
     it('Sender can cancel', async () => {
       // before transfer, we have a balance of 0
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // transfer
-      await rejectableNFT.connect(user1).transferFrom(user1.address, user2.address, 0);
+      await rejectableNFT
+        .connect(user1)
+        .transferFrom(user1.address, user2.address, 0);
       // after transfer, we have a balance of 0, because the receiver needs to accept
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // user1 is still the owner of the token
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
       // the receiver is the transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user2.address);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        user2.address
+      );
 
       // the sender can cancel
       await rejectableNFT.connect(user1).cancelTransfer(0);
@@ -225,20 +248,26 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
       // the receiver is removed as transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(ZERO_ADDRESS);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        ZERO_ADDRESS
+      );
     });
 
     it('Receiver can reject', async () => {
       // before transfer, we have a balance of 0
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // transfer
-      await rejectableNFT.connect(user1).transferFrom(user1.address, user2.address, 0);
+      await rejectableNFT
+        .connect(user1)
+        .transferFrom(user1.address, user2.address, 0);
       // after transfer, we have a balance of 0, because the receiver needs to accept
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // user1 is still the owner of the token
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
       // the receiver is the transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user2.address);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        user2.address
+      );
 
       // the sender can cancel
       await rejectableNFT.connect(user2).rejectTransfer(0);
@@ -246,20 +275,26 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
       // the receiver is removed as transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(ZERO_ADDRESS);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        ZERO_ADDRESS
+      );
     });
 
     it('Receiver can accept transfer', async () => {
       // before transfer, we have a balance of 0
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // transfer
-      await rejectableNFT.connect(user1).transferFrom(user1.address, user2.address, 0);
+      await rejectableNFT
+        .connect(user1)
+        .transferFrom(user1.address, user2.address, 0);
       // after transfer, we have a balance of 0, because the receiver needs to accept
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(0);
       // user1 is still the owner of the token
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user1.address);
       // the receiver is the transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(user2.address);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        user2.address
+      );
 
       // the sender can cancel
       await rejectableNFT.connect(user2).acceptTransfer(0);
@@ -267,7 +302,9 @@ describe('RejectableNFT', () => {
       expect(await rejectableNFT.balanceOf(user2.address)).to.be.equal(1);
       expect(await rejectableNFT.ownerOf(0)).to.be.equal(user2.address);
       // the receiver is removed as transferable owner
-      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(ZERO_ADDRESS);
+      expect(await rejectableNFT.transferableOwnerOf(0)).to.be.equal(
+        ZERO_ADDRESS
+      );
     });
   });
 });
