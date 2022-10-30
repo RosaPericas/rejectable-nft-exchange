@@ -24,8 +24,7 @@
     "lint:sol": "hardhat check",
     "lint:ts": "eslint . --ext .ts,.js --ignore-path .eslintignore",
     "lint:ts-fix": "eslint . --fix --ext .ts,.js --ignore-path .eslintignore",
-    "prettier:sol": "prettier --write 'contracts/**/*.sol'",
-    "prettier:ts": "prettier --write '**/*.js' '**/*.ts'"
+    "prettier": "prettier --write 'contracts/**/*.sol' '**/*.js' '**/*.ts'"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
