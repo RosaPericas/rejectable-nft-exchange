@@ -1,4 +1,4 @@
-import { DeployFunction } from 'hardhat-deploy/types';
+import { DeployFunction } from "hardhat-deploy/types";
 
 const func: DeployFunction = async ({
   // @ts-ignore
@@ -10,12 +10,12 @@ const func: DeployFunction = async ({
 
   const { deployer } = await getNamedAccounts();
 
-  await deploy('NFT', {
+  await deploy("NFT", {
     from: deployer,
-    args: ['NFT test', 'NFT1'],
+    args: ["NFT test", "NFT1"],
     log: true
   });
 };
 
-func.tags = ['NFT'];
+func.tags = ["NFT"];
 export default func;
