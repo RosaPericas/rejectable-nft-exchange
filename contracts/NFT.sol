@@ -16,7 +16,9 @@ contract NFT is ERC721, Ownable {
 
     Counters.Counter private _tokenIdCounter;
 
-    constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {}
+    constructor(string memory name_, string memory symbol_)
+        ERC721(name_, symbol_)
+    {}
 
     function safeMint(address _to) public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();

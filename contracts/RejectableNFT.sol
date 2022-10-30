@@ -55,7 +55,13 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC165, IERC165) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC165, IERC165)
+        returns (bool)
+    {
         return
             interfaceId == type(IERC721).interfaceId ||
             interfaceId == type(IERC721Metadata).interfaceId ||
@@ -65,8 +71,17 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     /**
      * @dev See {IERC721-balanceOf}.
      */
-    function balanceOf(address owner) public view virtual override returns (uint256) {
-        require(owner != address(0), "ERC721: balance query for the zero address");
+    function balanceOf(address owner)
+        public
+        view
+        virtual
+        override
+        returns (uint256)
+    {
+        require(
+            owner != address(0),
+            "ERC721: balance query for the zero address"
+        );
         return _balances[owner];
     }
 
@@ -87,11 +102,23 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     /**
      * @dev See {IERC721Metadata-tokenURI}.
      */
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
 
         string memory baseURI = _baseURI();
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, tokenId.toString())) : "";
+        return
+            bytes(baseURI).length > 0
+                ? string(abi.encodePacked(baseURI, tokenId.toString()))
+                : "";
     }
 
     /**
@@ -121,8 +148,17 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     /**
      * @dev See {IERC721-getApproved}.
      */
-    function getApproved(uint256 tokenId) public view virtual override returns (address) {
-        require(_exists(tokenId), "ERC721: approved query for nonexistent token");
+    function getApproved(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (address)
+    {
+        require(
+            _exists(tokenId),
+            "ERC721: approved query for nonexistent token"
+        );
 
         return _tokenApprovals[tokenId];
     }
@@ -130,14 +166,24 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     /**
      * @dev See {IERC721-setApprovalForAll}.
      */
-    function setApprovalForAll(address operator, bool approved) public virtual override {
+    function setApprovalForAll(address operator, bool approved)
+        public
+        virtual
+        override
+    {
         _setApprovalForAll(_msgSender(), operator, approved);
     }
 
     /**
      * @dev See {IERC721-isApprovedForAll}.
      */
-    function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
+    function isApprovedForAll(address owner, address operator)
+        public
+        view
+        virtual
+        override
+        returns (bool)
+    {
         return _operatorApprovals[owner][operator];
     }
 
@@ -150,7 +196,10 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         uint256 tokenId
     ) public virtual override {
         //solhint-disable-next-line max-line-length
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: transfer caller is not owner nor approved"
+        );
 
         _transfer(from, to, tokenId);
     }
@@ -175,7 +224,10 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         uint256 tokenId,
         bytes memory _data
     ) public virtual override {
-        require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: transfer caller is not owner nor approved");
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: transfer caller is not owner nor approved"
+        );
         _safeTransfer(from, to, tokenId, _data);
     }
 
@@ -204,7 +256,10 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         bytes memory _data
     ) internal virtual {
         _transfer(from, to, tokenId);
-        require(_checkOnERC721Received(from, to, tokenId, _data), "ERC721: transfer to non ERC721Receiver implementer");
+        require(
+            _checkOnERC721Received(from, to, tokenId, _data),
+            "ERC721: transfer to non ERC721Receiver implementer"
+        );
     }
 
     /**
@@ -226,10 +281,20 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
      *
      * - `tokenId` must exist.
      */
-    function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
-        require(_exists(tokenId), "ERC721: operator query for nonexistent token");
+    function _isApprovedOrOwner(address spender, uint256 tokenId)
+        internal
+        view
+        virtual
+        returns (bool)
+    {
+        require(
+            _exists(tokenId),
+            "ERC721: operator query for nonexistent token"
+        );
         address owner = RejectableNFT.ownerOf(tokenId);
-        return (spender == owner || isApprovedForAll(owner, spender) || getApproved(tokenId) == spender);
+        return (spender == owner ||
+            isApprovedForAll(owner, spender) ||
+            getApproved(tokenId) == spender);
     }
 
     /**
@@ -330,11 +395,20 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         bytes memory _data
     ) private returns (bool) {
         if (to.isContract()) {
-            try IERC721Receiver(to).onERC721Received(_msgSender(), from, tokenId, _data) returns (bytes4 retval) {
+            try
+                IERC721Receiver(to).onERC721Received(
+                    _msgSender(),
+                    from,
+                    tokenId,
+                    _data
+                )
+            returns (bytes4 retval) {
                 return retval == IERC721Receiver.onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert("ERC721: transfer to non ERC721Receiver implementer");
+                    revert(
+                        "ERC721: transfer to non ERC721Receiver implementer"
+                    );
                 } else {
                     assembly {
                         revert(add(32, reason), mload(reason))
@@ -396,22 +470,39 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     /**
      * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
      */
-    event TransferRequest(address indexed from, address indexed to, uint256 indexed tokenId);
+    event TransferRequest(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
 
     /**
      * @dev Emitted when receiver reject `tokenId` transfer from `from` to `to`.
      */
-    event RejectTransferRequest(address indexed from, address indexed to, uint256 indexed tokenId);
+    event RejectTransferRequest(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
 
     /**
      * @dev Emitted when sender cancels `tokenId` transfer `from` to `to`.
      */
-    event CancelTransferRequest(address indexed from, address indexed to, uint256 indexed tokenId);
+    event CancelTransferRequest(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
 
     // Mapping from token ID to transferable owner
     mapping(uint256 => address) private _transferableOwners;
 
-    function transferableOwnerOf(uint256 tokenId) public view virtual returns (address) {
+    function transferableOwnerOf(uint256 tokenId)
+        public
+        view
+        virtual
+        returns (address)
+    {
         address owner = _transferableOwners[tokenId];
 
         return owner;
@@ -420,7 +511,13 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     /**
      * @dev See {IERC721-ownerOf}.
      */
-    function ownerOf(uint256 tokenId) public view virtual override returns (address) {
+    function ownerOf(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (address)
+    {
         address owner = _owners[tokenId];
         // removed check, because when a token is minted, the owner is address(0)
         // require(owner != address(0), "ERC721: owner query for nonexistent token");
@@ -472,7 +569,10 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         address to,
         uint256 tokenId
     ) internal virtual {
-        require(RejectableNFT.ownerOf(tokenId) == from, "ERC721: transfer from incorrect owner");
+        require(
+            RejectableNFT.ownerOf(tokenId) == from,
+            "ERC721: transfer from incorrect owner"
+        );
         require(to != address(0), "ERC721: transfer to the zero address");
 
         _beforeTokenTransfer(from, to, tokenId);
@@ -481,7 +581,7 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         _approve(address(0), tokenId);
 
         _transferableOwners[tokenId] = to;
-        
+
         emit TransferRequest(from, to, tokenId);
         /* _balances[from] -= 1;
         _balances[to] += 1;
@@ -493,13 +593,17 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     }
 
     function acceptTransfer(uint256 tokenId) public {
-        require(_transferableOwners[tokenId] == _msgSender(), "RejectableNFT: accept transfer caller is not the receiver of the token");
+        require(
+            _transferableOwners[tokenId] == _msgSender(),
+            "RejectableNFT: accept transfer caller is not the receiver of the token"
+        );
 
         address from = RejectableNFT.ownerOf(tokenId);
         address to = _msgSender();
 
-        if (from != address(0)) { // Perhaps previous owner is address(0), when minting
-          _balances[from] -= 1;
+        if (from != address(0)) {
+            // Perhaps previous owner is address(0), when minting
+            _balances[from] -= 1;
         }
         _balances[to] += 1;
         _owners[tokenId] = to;
@@ -511,7 +615,10 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     }
 
     function rejectTransfer(uint256 tokenId) public {
-        require(_transferableOwners[tokenId] == _msgSender(), "RejectableNFT: reject transfer caller is not the receiver of the token");
+        require(
+            _transferableOwners[tokenId] == _msgSender(),
+            "RejectableNFT: reject transfer caller is not the receiver of the token"
+        );
 
         address from = RejectableNFT.ownerOf(tokenId);
         address to = _msgSender();
@@ -524,10 +631,12 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     function cancelTransfer(uint256 tokenId) public {
         //solhint-disable-next-line max-line-length
         require(
-          // perhaps previous owner is address(0), when minting
-          (RejectableNFT.ownerOf(tokenId) == address(0) && owner() == _msgSender()) ||
-          _isApprovedOrOwner(_msgSender(), tokenId),
-          "ERC721: transfer caller is not owner nor approved");
+            // perhaps previous owner is address(0), when minting
+            (RejectableNFT.ownerOf(tokenId) == address(0) &&
+                owner() == _msgSender()) ||
+                _isApprovedOrOwner(_msgSender(), tokenId),
+            "ERC721: transfer caller is not owner nor approved"
+        );
 
         address from = RejectableNFT.ownerOf(tokenId);
         address to = _transferableOwners[tokenId];
