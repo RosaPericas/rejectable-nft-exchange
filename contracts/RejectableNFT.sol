@@ -16,9 +16,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 /**
  * @title  Rejectable NFT
  * @author Miquel A. Cabot
- * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard, including the Metadata extension, but not including the Enumerable extension, which is available
- * separately as {ERC721Enumerable}.
- * It also adds the possibility to be rejected by the receiver of the transfer function
+ * @dev Implementation of ERC721 token that also adds the possibility to be
+ * rejected by the receiver of the transfer function
  */
 contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     using Address for address;
