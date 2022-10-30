@@ -7,7 +7,10 @@
     "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "rootDirs": ["./test"]
+    "rootDirs": ["./test"],
+    "forceConsistentCasingInFileNames": true,
+    "useUnknownInCatchVariables": false,
+    "noImplicitAny": false
   },
   "include": [
     "./test"
