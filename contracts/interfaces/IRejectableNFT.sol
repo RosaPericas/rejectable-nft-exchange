@@ -29,7 +29,7 @@ interface IRejectableNFT is IERC721 {
     );
 
     /**
-     * @dev Emitted when sender `from` cancels `tokenId` transfer `from` to `to`.
+     * @dev Emitted when sender `from` cancels `tokenId` transfer from `from` to `to`.
      */
     event CancelTransferRequest(
         address indexed from,
