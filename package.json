@@ -18,9 +18,8 @@
     "hardhatnode": "hardhat node",
     "console": "hardhat console",
     "coverage": "hardhat coverage",
-    "test": "hardhat test --network hardhat",
-    "deploy:localnet": "hardhat deploy --network hardhat",
-    "deploy:rinkeby": "hardhat deploy --network rinkeby",
+    "test": "hardhat test",
+    "deploy": "hardhat deploy",
     "prettier": "prettier --write 'contracts/**/*.sol' '**/*.ts'"
   },
   "devDependencies": {

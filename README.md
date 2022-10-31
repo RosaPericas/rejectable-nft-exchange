@@ -49,10 +49,10 @@ yarn coverage
 
 Deploy the smart contracts to the local hardhat network:
 ```
-yarn deploy:localnet
+yarn deploy
 ```
 
 Deploy the smart contracts to the Rinkeby test network:
 ```
-yarn deploy:rinkeby
+yarn deploy --network rinkeby
 ```
