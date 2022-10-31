@@ -13,13 +13,24 @@ import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+import "./interfaces/IRejectableNFT.sol";
+
 /**
  * @title  Rejectable NFT
  * @author Miquel A. Cabot
- * @dev Implementation of ERC721 token that also adds the possibility to be
- * rejected by the receiver of the transfer function
+ * @dev Implementation of https://eips.ethereum.org/EIPS/eip-721[ERC721] Non-Fungible Token Standard,
+ * including the Metadata extension, but not including the Enumerable extension, which is available
+ * separately as {ERC721Enumerable}.
+ * It also adds the possibility to be rejected by the receiver of the transfer function
  */
-contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
+contract RejectableNFT is
+    Context,
+    ERC165,
+    IERC721,
+    IRejectableNFT,
+    IERC721Metadata,
+    Ownable
+{
     using Address for address;
     using Strings for uint256;
     using Counters for Counters.Counter;
@@ -83,6 +94,24 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
             "ERC721: balance query for the zero address"
         );
         return _balances[owner];
+    }
+
+    /**
+     * @dev See {IERC721-ownerOf}.
+     */
+    function ownerOf(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (address)
+    {
+        address owner = _owners[tokenId];
+        require(
+            owner != address(0),
+            "ERC721: owner query for nonexistent token"
+        );
+        return owner;
     }
 
     /**
@@ -245,7 +274,8 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
      * - `from` cannot be the zero address.
      * - `to` cannot be the zero address.
      * - `tokenId` token must exist and be owned by `from`.
-     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received},
+     * which is called upon a safe transfer.
      *
      * Emits a {Transfer} event.
      */
@@ -303,7 +333,8 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
      * Requirements:
      *
      * - `tokenId` must not exist.
-     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received},
+     * which is called upon a safe transfer.
      *
      * Emits a {Transfer} event.
      */
@@ -467,33 +498,6 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
     // --------- Added or modified functions for RejectableNFT  ----------------
     // -------------------------------------------------------------------------
 
-    /**
-     * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
-     */
-    event TransferRequest(
-        address indexed from,
-        address indexed to,
-        uint256 indexed tokenId
-    );
-
-    /**
-     * @dev Emitted when receiver reject `tokenId` transfer from `from` to `to`.
-     */
-    event RejectTransferRequest(
-        address indexed from,
-        address indexed to,
-        uint256 indexed tokenId
-    );
-
-    /**
-     * @dev Emitted when sender cancels `tokenId` transfer `from` to `to`.
-     */
-    event CancelTransferRequest(
-        address indexed from,
-        address indexed to,
-        uint256 indexed tokenId
-    );
-
     // Mapping from token ID to transferable owner
     mapping(uint256 => address) private _transferableOwners;
 
@@ -501,26 +505,11 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         public
         view
         virtual
+        override
         returns (address)
     {
         address owner = _transferableOwners[tokenId];
 
-        return owner;
-    }
-
-    /**
-     * @dev See {IERC721-ownerOf}.
-     */
-    function ownerOf(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (address)
-    {
-        address owner = _owners[tokenId];
-        // removed check, because when a token is minted, the owner is address(0)
-        // require(owner != address(0), "ERC721: owner query for nonexistent token");
         return owner;
     }
 
@@ -592,7 +581,7 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         _afterTokenTransfer(from, to, tokenId);
     }
 
-    function acceptTransfer(uint256 tokenId) public {
+    function acceptTransfer(uint256 tokenId) public override {
         require(
             _transferableOwners[tokenId] == _msgSender(),
             "RejectableNFT: accept transfer caller is not the receiver of the token"
@@ -614,7 +603,7 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         emit Transfer(from, to, tokenId);
     }
 
-    function rejectTransfer(uint256 tokenId) public {
+    function rejectTransfer(uint256 tokenId) public override {
         require(
             _transferableOwners[tokenId] == _msgSender(),
             "RejectableNFT: reject transfer caller is not the receiver of the token"
@@ -628,7 +617,7 @@ contract RejectableNFT is Context, ERC165, IERC721, IERC721Metadata, Ownable {
         emit RejectTransferRequest(from, to, tokenId);
     }
 
-    function cancelTransfer(uint256 tokenId) public {
+    function cancelTransfer(uint256 tokenId) public override {
         //solhint-disable-next-line max-line-length
         require(
             // perhaps previous owner is address(0), when minting
