@@ -97,24 +97,6 @@ contract RejectableNFT is
     }
 
     /**
-     * @dev See {IERC721-ownerOf}.
-     */
-    function ownerOf(uint256 tokenId)
-        public
-        view
-        virtual
-        override
-        returns (address)
-    {
-        address owner = _owners[tokenId];
-        require(
-            owner != address(0),
-            "ERC721: owner query for nonexistent token"
-        );
-        return owner;
-    }
-
-    /**
      * @dev See {IERC721Metadata-name}.
      */
     function name() public view virtual override returns (string memory) {
@@ -510,6 +492,22 @@ contract RejectableNFT is
     {
         address owner = _transferableOwners[tokenId];
 
+        return owner;
+    }
+
+    /**
+     * @dev See {IERC721-ownerOf}.
+     */
+    function ownerOf(uint256 tokenId)
+        public
+        view
+        virtual
+        override
+        returns (address)
+    {
+        address owner = _owners[tokenId];
+        // removed check, because when a token is minted, the owner is address(0)
+        // require(owner != address(0), "ERC721: owner query for nonexistent token");
         return owner;
     }
 
