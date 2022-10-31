@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @title  NFT
- * @author Miquel A. Cabot
  * @dev Regular ERC721 token that can be minted by the owner
  */
 contract NFT is ERC721, Ownable {

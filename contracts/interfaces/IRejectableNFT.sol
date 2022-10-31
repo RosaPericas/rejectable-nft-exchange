@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 /**
  * @title  Rejectable NFT interface
- * @author Miquel A. Cabot
  * @dev Iterface that inherits from a Non-Fungible Token Standard, and it also adds
  * the possibility to be rejected by the receiver of the transfer function.
  */
