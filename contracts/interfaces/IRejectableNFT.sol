@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
  */
 interface IRejectableNFT is IERC721 {
     /**
-     * @dev Emitted when `tokenId` token is tried to be transferred from `from` sender to `to` receiver.
+     * @dev Emitted when `tokenId` token is proposed to be transferred from `from` sender to `to` receiver.
      */
     event TransferRequest(
         address indexed from,
