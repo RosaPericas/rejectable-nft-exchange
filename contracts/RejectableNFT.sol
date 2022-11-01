@@ -611,7 +611,7 @@ contract RejectableNFT is
 
         _transferableOwners[tokenId] = address(0);
 
-        emit RejectTransferRequest(from, to, tokenId);
+        emit RejectTransfer(from, to, tokenId);
     }
 
     function cancelTransfer(uint256 tokenId) public override {
@@ -630,6 +630,6 @@ contract RejectableNFT is
         require(to != address(0), "RejectableNFT: token is not transferable");
         _transferableOwners[tokenId] = address(0);
 
-        emit CancelTransferRequest(from, to, tokenId);
+        emit CancelTransfer(from, to, tokenId);
     }
 }
