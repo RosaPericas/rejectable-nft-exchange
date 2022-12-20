@@ -50,9 +50,10 @@ interface IRejectableNFT is IERC721 {
     /**
      * @dev Accepts the transfer of the given token ID
      * The caller must be the current transferable owner of the token ID
-     * @param tokenId ID of the token to be transferred
+     * @param tokenId1 ID of the token to be transferred
+     * @param tokenId2 ID of the token to be transferred
      */
-    function acceptTransfer(uint256 tokenId) external;
+    function acceptTransfer(uint256 tokenId1, uint256 tokenId2) external;
 
     /**
      * @dev Rejects the transfer of the given token ID

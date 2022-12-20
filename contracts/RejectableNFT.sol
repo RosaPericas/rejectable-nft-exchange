@@ -60,6 +60,7 @@ contract RejectableNFT is
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
+        _tokenIdCounter.increment();
     }
 
     /**
@@ -211,7 +212,23 @@ contract RejectableNFT is
             "ERC721: transfer caller is not owner nor approved"
         );
 
-        _transfer(from, to, tokenId);
+        _transfer(from, to, tokenId, 0);
+    }
+
+    //ADD ROSA
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId1,
+        uint256 tokenId2
+    ) public virtual {
+        //solhint-disable-next-line max-line-length
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId1),
+            "ERC721: transfer caller is not owner nor approved"
+        );
+
+        _transfer(from, to, tokenId1, tokenId2);
     }
 
     /**
@@ -266,7 +283,7 @@ contract RejectableNFT is
         uint256 tokenId,
         bytes memory _data
     ) internal virtual {
-        _transfer(from, to, tokenId);
+        _transfer(from, to, tokenId, 0);
         require(
             _checkOnERC721Received(from, to, tokenId, _data),
             "ERC721: transfer to non ERC721Receiver implementer"
@@ -482,6 +499,8 @@ contract RejectableNFT is
     // Mapping from token ID to transferable owner
     mapping(uint256 => address) private _transferableOwners;
 
+    mapping(uint256 => address) private _applicantRecipient;
+
     function transferableOwnerOf(uint256 tokenId)
         public
         view
@@ -528,13 +547,20 @@ contract RejectableNFT is
 
         _beforeTokenTransfer(address(0), to, tokenId);
 
-        _transferableOwners[tokenId] = to;
+         // Check that tokenId was not minted by `_beforeTokenTransfer` hook
+        require(!_exists(tokenId), "ERC721: token already minted");
 
-        emit TransferRequest(address(0), to, tokenId);
-        /* _balances[to] += 1;
+        unchecked {
+            // Will not overflow unless all 2**256 token ids are minted to the same owner.
+            // Given that tokens are minted one by one, it is impossible in practice that
+            // this ever happens. Might change if we allow batch minting.
+            // The ERC fails to describe this case.
+            _balances[to] += 1;
+        }
+
         _owners[tokenId] = to;
 
-        emit Transfer(address(0), to, tokenId); */
+        emit Transfer(address(0), to, tokenId);
 
         _afterTokenTransfer(address(0), to, tokenId);
     }
@@ -553,51 +579,73 @@ contract RejectableNFT is
     function _transfer(
         address from,
         address to,
-        uint256 tokenId
+        uint256 tokenId1, 
+        uint256 tokenId2
     ) internal virtual {
         require(
-            RejectableNFT.ownerOf(tokenId) == from,
+            RejectableNFT.ownerOf(tokenId1) == from,
             "ERC721: transfer from incorrect owner"
         );
         require(to != address(0), "ERC721: transfer to the zero address");
 
-        _beforeTokenTransfer(from, to, tokenId);
+        _beforeTokenTransfer(from, to, tokenId1);
 
         // Clear approvals from the previous owner
-        _approve(address(0), tokenId);
+        _approve(address(0), tokenId1);
 
-        _transferableOwners[tokenId] = to;
+        _transferableOwners[tokenId1] = to;
 
-        emit TransferRequest(from, to, tokenId);
+        if(tokenId2 != 0){
+            _applicantRecipient[tokenId2] = from;
+        }
+
+        emit TransferRequest(from, to, tokenId1);
         /* _balances[from] -= 1;
         _balances[to] += 1;
         _owners[tokenId] = to;
 
         emit Transfer(from, to, tokenId); */
 
-        _afterTokenTransfer(from, to, tokenId);
+        _afterTokenTransfer(from, to, tokenId1);
     }
 
-    function acceptTransfer(uint256 tokenId) public override {
+    function acceptTransfer(uint256 tokenId1, uint256 tokenId2) public override {
         require(
-            _transferableOwners[tokenId] == _msgSender(),
+            _transferableOwners[tokenId1] == _msgSender(),
             "RejectableNFT: accept transfer caller is not the receiver of the token"
         );
 
-        address from = RejectableNFT.ownerOf(tokenId);
+        address from = RejectableNFT.ownerOf(tokenId1);
         address to = _msgSender();
 
         if (from != address(0)) {
             // Perhaps previous owner is address(0), when minting
             _balances[from] -= 1;
-        }
+        } 
         _balances[to] += 1;
-        _owners[tokenId] = to;
+        _owners[tokenId1] = to;
 
         // remove the transferable owner from the mapping
-        _transferableOwners[tokenId] = address(0);
+        _transferableOwners[tokenId1] = address(0);
+        
+        emit Transfer(from, to, tokenId1);
 
-        emit Transfer(from, to, tokenId);
+        if(tokenId2 != 0){
+            _beforeTokenTransfer(to, from, tokenId2);
+            require(RejectableNFT.ownerOf(tokenId2) == to, "ERC721: transfer from incorrect owner");
+
+            delete _tokenApprovals[tokenId2];
+
+            unchecked{
+                _balances[to] -= 1;
+                _balances[from] += 1;
+            }
+
+            _owners[tokenId2] = from;
+
+            _afterTokenTransfer(to, from, tokenId2);
+        }
+
     }
 
     function rejectTransfer(uint256 tokenId) public override {
